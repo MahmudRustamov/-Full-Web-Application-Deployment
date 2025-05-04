@@ -1,6 +1,3 @@
-#Full-Web-Application-Deployment
-Final Project: Full Web Application Deployment on AWS (EC2, RDS, S3)
-
 This project is a simple full-stack customer management system allowing users to add, search, and delete customer data using a PostgreSQL database.
 # 👤 Customer Management System – Flask + PostgreSQL
 A simple Customer Management System built with Flask. It uses a PostgreSQL database hosted on AWS RDS and runs on an EC2 instance. Users can be added or deleted through a web interface.
