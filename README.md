@@ -28,8 +28,8 @@ A simple Customer Management System built with Flask. It uses a PostgreSQL datab
 
 ## 📂 Project Structure
 final_project/
-├── app.py
-├── frontend/ # Static frontend files (hosted in S3)
+ backend -> app.py
+ frontend -> Static frontend files (hosted in S3)
 
 1. Set up EC2 Instance:
 
