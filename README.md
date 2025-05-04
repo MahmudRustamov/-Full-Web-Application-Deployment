@@ -1,4 +1,4 @@
-# -Full-Web-Application-Deployment
+#Full-Web-Application-Deployment
 Final Project: Full Web Application Deployment on AWS (EC2, RDS, S3)
 
 This project is a simple full-stack customer management system allowing users to add, search, and delete customer data using a PostgreSQL database.
