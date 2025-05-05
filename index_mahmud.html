@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Customers</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .header-actions {
+            background-color: #e9ecef;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .header-actions button {
+            margin: 0 10px;
+        }
+
+        .user-card {
+            border: 1px solid #f0f0f0;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .user-info {
+            flex-grow: 1;
+        }
+
+        .search-delete-container {
+            display: none;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .search-delete-container input {
+            margin: 0 10px;
+            width: 200px;
+        }
+
+        .modal-title {
+            font-weight: bold;
+        }
+
+        #searchResults {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="header-actions">
+            <h2 class="mb-3">Manage Customers</h2>
+            <div class="d-flex justify-content-center gap-2">
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal">Add New
+                    Customer</button>
+                <button class="btn btn-success" id="showSearch">Search</button>
+                <button class="btn btn-danger" id="showDelete">Delete</button>
+            </div>
+        </div>
+
+        <div id="searchContainer" class="search-delete-container">
+            <div class="d-flex justify-content-center gap-2">
+                <input type="number" class="form-control" id="userIdSearch" placeholder="Search by Customer ID">
+                <button class="btn btn-success" id="searchButton">Search</button>
+                <button class="btn btn-secondary" id="cancelSearch">Cancel</button>
+            </div>
+        </div>
+
+        <div id="deleteContainer" class="search-delete-container">
+            <div class="d-flex justify-content-center gap-2">
+                <input type="number" class="form-control" id="userIdDelete" placeholder="Enter ID to Delete">
+                <button class="btn btn-danger" id="deleteButton">Delete</button>
+                <button class="btn btn-secondary" id="cancelDelete">Cancel</button>
+            </div>
+        </div>
+
+        <div id="customerList" class="mt-4">
+        </div>
+
+        <div id="searchResults" class="mt-4">
+        </div>
+
+        <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addUserModalLabel">Add New Customer</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="addUserForm">
+                            <div class="mb-3">
+                                <label for="userId" class="form-label">Customer ID</label>
+                                <input type="number" class="form-control" id="userId" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="gender" class="form-label">Gender</label>
+                                <select class="form-select" id="gender" required>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="age" class="form-label">Age</label>
+                                <input type="number" class="form-control" id="age" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="salary" class="form-label">Estimated Salary</label>
+                                <input type="number" class="form-control" id="salary" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="purchased" class="form-label">Purchased</label>
+                                <input type="number" class="form-control" id="purchased" required>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer justify-content-center">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="addUserButton">Add Customer</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title" id="successModalLabel">Success!</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <p id="successMessage"></p>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="deleteSuccessModal" tabindex="-1" aria-labelledby="deleteSuccessModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="deleteSuccessModalLabel">Success!</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <p id="deleteSuccessMessage"></p>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title" id="confirmDeleteModalLabel">Confirm Delete</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <p id="confirmDeleteMessage">Are you sure you want to delete this customer?</p>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                        id="cancelDeleteAction">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteAction">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            const API_BASE_URL = 'http://13.203.79.40'; // Umumiy IP manzil
+            const API_PORT = '7777';
+            const API_ENDPOINT = `${API_BASE_URL}:${API_PORT}/customers`; // Umumiy endpoint
+
+            loadCustomers();
+            $('#searchResults').hide();
+            $('#searchContainer').hide();
+            $('#deleteContainer').hide();
+
+            $('body').css('background-color', '#f8f9fa');
+
+            let userIdToDelete; // Variable to store the ID of the customer to delete
+
+            $('#showSearch').on('click', function () {
+                $('#searchContainer').show();
+                $('#deleteContainer').hide();
+                $('#searchResults').empty();
+                $('#customerList').show();
+                $('#userIdDelete').val('');
+            });
+
+            $('#showDelete').on('click', function () {
+                $('#deleteContainer').show();
+                $('#searchContainer').hide();
+                $('#searchResults').empty();
+                $('#customerList').show();
+                $('#userIdSearch').val('');
+            });
+
+            $('#cancelSearch').on('click', function () {
+                $('#searchContainer').hide();
+                $('#userIdSearch').val('');
+                $('#searchResults').empty();
+                $('#customerList').show();
+            });
+
+            $('#cancelDelete').on('click', function () {
+                $('#deleteContainer').hide();
+                $('#userIdDelete').val('');
+                $('#customerList').show();
+            });
+
+            $('#addUserButton').on('click', function () {
+                const userId = $('#userId').val();
+                const gender = $('#gender').val();
+                const age = $('#age').val();
+                const salary = $('#salary').val();
+                const purchased = $('#purchased').val();
+
+                fetch(`${API_ENDPOINT}/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        UserID: userId,
+                        Gender: gender,
+                        Age: age,
+                        EstimatedSalary: salary,
+                        Purchased: purchased
+                    })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        $('#successMessage').text('Customer added successfully!');
+                        $('#successModal').modal('show');
+                        $('#addUserForm')[0].reset();
+                        $('#addUserModal').modal('hide');
+                        loadCustomers();
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+
+            $('#searchButton').on('click', function () {
+                const userId = $('#userIdSearch').val();
+                $('#searchResults').empty();
+                $('#customerList').hide();
+
+                if (userId) {
+                    fetch(`${API_ENDPOINT}/${userId}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.message === "Customer not found") {
+                                $('#searchResults').html(`<div class="alert alert-warning">${data.message}</div>`).show();
+                            } else if (data.message) {
+                                $('#searchResults').html(`<div class="alert alert-danger">${data.message}</div>`).show();
+                            }
+                            else {
+                                const userCard = `
+                                    <div class="user-card">
+                                        <div class="user-info">
+                                            <h5>Customer ID: ${data.UserID}</h5>
+                                            <p>Gender: ${data.Gender}</p>
+                                            <p>Age: ${data.Age}</p>
+                                            <p>Salary: ${data.EstimatedSalary}</p>
+                                            <p>Purchased: ${data.Purchased}</p>
+                                        </div>
+                                    </div>
+                                `;
+                                $('#searchResults').html(userCard).show();
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Search Error:', error);
+                            $('#searchResults').html(`<div class="alert alert-danger">Error searching for customer.</div>`).show();
+                        });
+                } else {
+                    $('#customerList').show();
+                }
+            });
+
+            $('#deleteButton').on('click', function (e) {
+                e.preventDefault();
+                userIdToDelete = $('#userIdDelete').val();
+                $('#confirmDeleteModal').modal('show');
+            });
+
+            $('.delete-btn').on('click', function (e) {
+                e.preventDefault();
+                userIdToDelete = $(this).data('user-id');
+                $('#confirmDeleteModal').modal('show');
+            });
+
+            $('#confirmDeleteAction').on('click', function () {
+                if (userIdToDelete) {
+                    fetch(`${API_ENDPOINT}/${userIdToDelete}`, {
+                        method: 'DELETE'
+                    })
+                        .then(res => res.json())
+                        .then(data => {
+                            $('#deleteSuccessMessage').text(data.message);
+                            $('#deleteSuccessModal').modal('show');
+                            loadCustomers();
+                            $('#confirmDeleteModal').modal('hide');
+                            $('#deleteContainer').hide();
+                            $('#userIdDelete').val('');
+                            userIdToDelete = null;
+                        })
+                        .catch(error => console.error('Delete Error:', error));
+                }
+            });
+
+            $('#cancelDeleteAction').on('click', function () {
+                userIdToDelete = null;
+            });
+
+            function loadCustomers() {
+                $('#customerList').empty();
+                fetch(API_ENDPOINT)
+                    .then(response => response.json())
+                    .then(data => {
+                        data.forEach(user => {
+                            const userCard = `
+                                <div class="user-card">
+                                    <div class="user-info">
+                                        <h5>Customer ID: ${user[0]}</h5>
+                                        <p>Gender: ${user[1]}</p>
+                                        <p>Age: ${user[2]}</p>
+                                        <p>Salary: ${user[3]}</p>
+                                        <p>Purchased: ${user[4]}</p>
+                                    </div>
+                                    <div class="user-actions">
+                                        <button class="btn btn-danger btn-sm delete-btn" data-user-id="${user[0]}">Delete</button>
+                                    </div>
+                                </div>
+                            `;
+                            $('#customerList').append(userCard);
+                        });
+
+                        // Re-attach event listeners to dynamically added delete buttons
+                        $('.delete-btn').off('click').on('click', function (e) {
+                            e.preventDefault();
+                            userIdToDelete = $(this).data('user-id');
+                            $('#confirmDeleteModal').modal('show');
+                        });
+                    })
+                    .catch(error => console.error('Error loading customers:', error));
+            }
+        });
+    </script>
+
+</body>
+
+</html>
